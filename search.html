@@ -1,0 +1,254 @@
+ <!DOCTYPE html>
+<html>
+
+
+
+
+
+
+<head>
+
+
+    <title>Chocolatte</title>
+  <!--  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> -->
+    <script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+    <script src="../js/color-thief.js"></script>
+    <script src="js/jquery.chocolat.js"></script>
+    <script src="js/lightgallery.min.js"></script>
+    <script src="js/lg-thumbnail.min.js"></script>
+    <script src="js/lg-fullscreen.min.js"></script>
+    <script src="js/Vibrant.js"></script>
+    <script src="js/jquery.fakecrop.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/progress.js"></script>
+    <link rel="shortcut icon" href="../favicon.ico">
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+		<script src="js/modernizr.custom.js"></script>
+    <script src="js/toucheffects.js"></script>
+
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!-- css -->
+<link type="text/css" rel="stylesheet" href="css/lightgallery.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+      <link rel="stylesheet" href="main.css">
+      <link rel="stylesheet" href="../css/normalize.css">
+      <link rel="stylesheet" href="../css/skeleton.css">
+
+      <link rel="stylesheet" href="css/chocolat.css">
+      <script type="text/javascript" src="js/adaptive-backgrounds.js"></script>
+      <script type="text/javascript" src="js/imagesloaded.pkgd.js"></script>
+
+      <!-- FONT
+      –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+      <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<!--nav bar -->
+<nav class="navbar navbar-default" >
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">WebSiteName</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="#">HOME</a></li>
+      <li><a href="#">SEARCH BY KEYWORDS</a></li>
+      <li><a href="searchbycolor.html">SEARCH BY COLOR</a></li>
+      <li><a href="#">MY PALETTE</a></li>
+      <li><a href="#">ABOUT</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<div>
+<!--search bar -->
+<form class="form-inline"  id="myForm" action="" method="post">
+
+    <div class="form-group">
+
+        <input class = "u-full-width" type="text" class="form-control " id="item" name="imageSearch" placeholder="Search for an Image">
+    </div>
+    <input type="submit" value="submit input"> <br> <br>
+</form>
+<div id="chocolat-parent"></div>
+<div id="palette"></div>
+</div>
+
+<script>
+
+   var length = 3;
+   var colorarr = new Array(length);
+
+
+   var svgElement = $('<svg width="50px" height="50px"><rect fill="#ff00ff" width="50px" height="50px"></rect></svg>');
+//search by keyword
+    $('#myForm').on('submit', function(e){
+        e.preventDefault();
+        search();
+        return false;
+    });
+
+
+
+
+
+
+    function search() {
+        var apiKey = '3qnrktstw5fdh8yayg43kj87';
+
+
+
+
+        $.ajax(
+                {
+                    type:'GET',
+                    url:"https://api.gettyimages.com/v3/search/images?phrase=" + $('#item').val() + "&fields=comp&page=3&page_size=20",
+                    beforeSend: function (request)
+                    {
+                        request.setRequestHeader("Api-Key", apiKey);
+                    }})
+                .done(function(data){
+                    console.log("Success with data");
+
+                    for(var i = 0;i<data.images.length;i++)
+
+                    {
+
+                      length = data.images.length;
+
+                      //var img = document.createElement('img');
+
+                      //img.crossOrigin = 'Anonymous';
+
+                      // do stuff
+
+
+                      //img.src = data.images[i].display_sizes[0].uri;
+
+
+
+                      console.log(i);
+
+
+
+
+
+
+
+                        // load image from data url
+                        $("#chocolat-parent").append("<span class='grid cs-style-3'><li><figure class='f'><a class='chocolat-image' href='"+  data.images[i].display_sizes[0].uri +"'> <img class='gallery' src='" +  data.images[i].display_sizes[0].uri + "' cross-origin='anonymous' id='"+i +"'> </img></a></figure></li></span>");
+
+
+
+
+                      //var result = image.isLoaded ? 'loaded' : 'broken';
+
+
+                  //    $("img").each(function() {
+
+
+
+
+
+//});
+
+var j=0;
+
+//var colorarr = new Array(data.images.length);
+
+(function(){
+
+      var xhr = new XMLHttpRequest();
+xhr.responseType = "blob";
+xhr.onload = function () {
+window.URL = window.URL || window.webkitURL; // support for Safari/old Chrome
+var img = document.createElement('img');
+img.src = window.URL.createObjectURL(xhr.response);
+img.onload = function() {
+var colorThief = new ColorThief();
+var color = colorThief.getColor(img);
+
+colorarr[j] = color;
+console.log(colorarr[j]);
+
+$('#' + j).after("<figcaption><a href='image.php'>takealook</a><svg class='svg' width='100' height='70'><rect width='50' height='50' style='fill:rgb("+color+");stroke-width:3;stroke:rgb(0,0,0)' /></svg></figcaption>");
+
+
+  console.log(j);
+//$(this).attr('title', colorarr[j]);
+
+j++;
+
+
+//console.log('rgb('+color+')');
+};
+};
+xhr.open('GET', data.images[i].display_sizes[0].uri);
+
+
+xhr.send();
+
+
+})();
+
+console.log(colorarr[5]);
+
+
+
+
+
+
+
+
+                }//end of for
+
+
+
+
+                    //call chocolat
+                  $('#chocolat-parent').Chocolat({
+
+                  afterMarkup : function(){
+                      
+                          $('.chocolat-content').each(function(i){
+                          
+                               $(this).append("<div>"+i+"</div>");
+                               
+                               
+                           });
+                          
+                  }     
+                });
+                      
+                  
+
+
+            
+
+                })
+
+                .fail(function(data){
+                    alert(JSON.stringify(data,3))
+                });
+        return false;
+    }
+
+//function impalette
+
+
+
+
+//});
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
